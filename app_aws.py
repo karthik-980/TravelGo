@@ -21,7 +21,7 @@ sns = boto3.client('sns', region_name=region)
 users_table = dynamodb.Table('Users')
 bookings_table = dynamodb.Table('Bookings')
 
-SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:664418997405:TravelGo'  # Replace with your actual topic ARN
+SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:337909780815:TravelGo'  # Replace with your actual topic ARN
 
 # Helper Functions
 def get_user_by_email(email):
@@ -41,7 +41,7 @@ def add_user(name, email, password, phone=None, preferences=None):
 def add_booking(user_email, service, time, price, status='Confirmed', date=None):
     booking_id = str(uuid.uuid4())
     bookings_table.put_item(Item={
-        'id': booking_id,
+        'booking_id': booking_id,
         'user_email': user_email,
         'service': service,
         'time': time,
@@ -68,7 +68,7 @@ def cancel_user_booking(user_email, service, date):
     if items:
         booking = items[0]
         bookings_table.update_item(
-            Key={'id': booking['id']},
+            Key={'booking_id': booking['booking_id']},
             UpdateExpression='SET #s = :val1',
             ExpressionAttributeNames={'#s': 'status'},
             ExpressionAttributeValues={':val1': 'Cancelled'}
